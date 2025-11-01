@@ -14,12 +14,16 @@ def menu():
 
 def cadastrar_usuario(usuarios):
     print("Por favor, preencha os dados para o cadastro:\n")
-    cpf = input("Digite os números do seu CPF (sem ponto e/ou traço): \n")
+    cpf = validar_CPF()
+
+    if cpf is None:
+        print("\nNúmero de tentativas excedidas.\n")
+        return
+    
     usuario = validar_usuario(cpf, usuarios)
     if usuario:
         print("\nUsuário já cadastrado!\n")
         return
-
 
     nome = input("Nome completo: \n")  
     data_nascimento = input("Data de nascimento (DD/MM/AAAA): \n")
@@ -32,13 +36,24 @@ def cadastrar_usuario(usuarios):
         }
     usuarios.append(usuario)
     print("\nUsuário cadastrado com sucesso!\n")
+
+def validar_CPF():
+    NUMERO_TENTATIVAS = 3
+
+    for tentativa in range(NUMERO_TENTATIVAS):
+        cpf = input("Digite os números do seu CPF (sem ponto e/ou traço): \n")
+
+        if cpf.isdigit() and len(cpf) == 11:
+            return cpf
+        else:
+            print(f"\nCPF inválido! Digite apenas números e verifique se possui 11 dígitos. Tentativa {tentativa + 1} de {NUMERO_TENTATIVAS}.\n")
+            
+    return None
     
 def validar_usuario(cpf, usuarios):
+
     for usuario in usuarios:
-        if len(cpf) != 11:
-            print("\nCPF inválido! O CPF deve conter 11 dígitos.\n")
-        
-        elif usuario["cpf"] == cpf:
+        if usuario["cpf"] == cpf:
             return usuario
     return None
 
